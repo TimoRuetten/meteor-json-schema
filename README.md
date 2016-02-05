@@ -24,11 +24,12 @@ var myNewSchema = new JsonSchema({
  });
 ```
 
-Now you have access to the .validate method.
+Now you have access to the ```.validate(value)``` method.
 
-```schema.validate(value);```
+
 
 This method will return a jsonschema validation object. You can simply check if the validation was successful when check the property ```valid```. 
+
 
 Example:
 
