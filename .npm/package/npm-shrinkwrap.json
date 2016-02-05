@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "jsonschema": {
+      "version": "1.0.3"
+    }
+  }
+}
