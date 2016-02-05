@@ -2,7 +2,7 @@ Package.describe({
   name: 'timoruetten:json-schema',
   version: '0.0.1',
   summary: 'Adds jsonschema to Meteor. More information at http://json-schema.org/',
-  git: '',
+  git: 'https://github.com/TimoRuetten/meteor-json-schema.git',
   documentation: 'README.md'
 });
 
