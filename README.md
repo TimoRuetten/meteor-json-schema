@@ -1,7 +1,7 @@
 # Meteor Json Schema
 Simple wrapper for ```jsonschema``` for Meteor with some extras to work better with it.
 
-This package is currently in development so the most features are missing.
+This package is currently in development so most features are missing.
 
 Please visit [npm jsonschema site](https://www.npmjs.com/package/jsonschema) for more information about jsonschema.
 
@@ -28,7 +28,7 @@ Now you have access to the ```.validate(value)``` method.
 
 
 
-This method will return a jsonschema validation object. You can simply check if the validation was successful when check the property ```valid```. 
+This method will return a jsonschema validation object. You can simply check if the validation was successful by checking the property ```valid```. 
 
 
 Example:
@@ -53,7 +53,7 @@ Basicly you have access to all default jsonschema attributes for your schema.
 
 You are able to add a custom validation for a field. Currently you are not able to add a Async validation.
 
-The custom validation is a function which returns nothing when the validation is successful and returns a string or a valid jsonschema error when the validation failed.
+The custom validation is a function which returns nothing if the validation is successful and returns a string or a valid jsonschema error if the validation failed.
 
 Example:
 
