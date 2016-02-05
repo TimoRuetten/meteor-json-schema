@@ -20,7 +20,7 @@ Package.onUse(function(api) {
   api.addFiles(['packages/jsonschema.js'], 'server');
 
   api.addFiles([
-    'jsonschema-custom.js',
+    'custom-attributes/custom.js',
     'jsonschema.js'
   ]);
 
