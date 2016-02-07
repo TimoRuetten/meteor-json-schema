@@ -74,6 +74,30 @@ We will bind some information for you in your custom function. These properties 
 * **this.value**: Representing the value of the current field you are validating
 * **this.schema**: Representing the schema object of the field you are validating
 
+### Label
+
+You can add a label property to your fields. These labels will be later available for error messages and are be accesable from everywhere - for example when you are creating a form based on a schema.
+
+Example:
+
+```javascript
+Person = new JsonSchema({
+  id: '/Person',
+  type: 'Object',
+  label: 'Information about you',
+  properties: {
+    name: {
+      type: 'string',
+      label: 'Your Name'
+    },
+    address: {
+      $ref: '/Address',
+      kabel: 'Your Adress'
+    }
+  },
+  required: ['name', 'address']
+});
+```
 
 ## The Future
 
