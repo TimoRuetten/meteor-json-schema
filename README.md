@@ -99,8 +99,11 @@ Person = new JsonSchema({
 });
 ```
 
+You can Access a label by using ```Schema.label(field);``` When your field is an Object you can nest the name of the field like this: ```Person.label('address.street');```
+
 ## The Future
 
+* custom error messages
 * acess other fields in custom validation
 * support for collections
 * async support for custom validation
