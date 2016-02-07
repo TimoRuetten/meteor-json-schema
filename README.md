@@ -92,7 +92,7 @@ Person = new JsonSchema({
     },
     address: {
       $ref: '/Address',
-      label: 'Your Adress'
+      label: 'Your Address'
     }
   },
   required: ['name', 'address']
