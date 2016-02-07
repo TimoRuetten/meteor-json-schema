@@ -60,9 +60,12 @@ Example:
 
 ```javascript
 {
-	"key": function () {
-		if (this.value != "insecureKey") return "Wrong Key!"
-	}
+	"key": {
+    	type: 'string',
+    	custom: function () {
+  			if (this.value != "insecureKey") return "Wrong Key!"
+  		}
+  	}
 }
 ```
 
@@ -78,5 +81,4 @@ We will bind some information for you in your custom function. These properties 
 * support for collections
 * async support for custom validation
 * way to access the Validator to customize
-* add label support
 * add reactive support for label
