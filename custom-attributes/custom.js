@@ -1,6 +1,6 @@
 
 
-JsonSchemaUtility.validatorCustomProperties('custom', function (value, schema, options, ctx) {
+JsonSchemaUtility.validatorCustomProperty('custom', function (value, schema, options, ctx) {
   if (!_.isFunction(schema.custom)) return 'The custom attribute must be a valid function.';
   const bindObject = {
     value,

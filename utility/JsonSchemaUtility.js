@@ -15,7 +15,7 @@ JsonSchemaUtility = {
     }
     return this._validators[key];
   },
-  validatorCustomProperties(key, property) {
+  validatorCustomProperty(key, property) {
     this._customProperties[key] = property;
     /**
       TODO:
