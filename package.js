@@ -20,9 +20,10 @@ Package.onUse(function(api) {
   api.addFiles(['packages/jsonschema.js'], 'server');
 
   api.addFiles([
+    'utility/JsonSchemaUtility.js',
     'custom-attributes/custom.js',
     'jsonschema.js'
   ]);
 
-  api.export('JsonSchema', ['client', 'server']);
+  api.export(['JsonSchemaUtility', 'JsonSchema'], ['client', 'server']);
 });
