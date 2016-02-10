@@ -1,7 +1,5 @@
 /**
 * We want to add our schemas to our collections
-*
-*
 */
 
 
@@ -22,21 +20,16 @@ manipulateMongoMethods.map(function(method){
 
     if (this._mjs) {
 
-      /**
-        If insert:
-        - get the doc
-        - validate with the given schema this._mjs.validate(args[0]);
+      const doc = (method == 'insert') ? args[0]:false;
 
-        If update:
-        - get the doc
-        - validate just the given fields in update
-
-      */
-      let failed = false;
-      if (failed && method == 'insert') return this._makeNewID();
-
+      if (doc) {
+        let validation = this._mjs.validate(doc);
+        if (!validation.valid) {
+          // Trigger a error
+          throw new Meteor.Error(400, 'The Validation failed');
+        }
+      }
     }
-
 
     return mongoMethod.apply(this, args);
   };
