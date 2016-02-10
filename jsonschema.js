@@ -63,4 +63,8 @@ JsonSchema = class JsonSchema {
     */
     return this.getSchema(field).label || false;
   }
+
+  attachTo(collection, opt) {
+    collection.attachJsonSchema(this, opt);
+  }
 };
