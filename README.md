@@ -10,7 +10,7 @@ After you have installed the package you are able to access the ```JsonSchema```
 
 ## Add a new schema
 
-Simply add a new Schema with the JsonSchema Object. 
+Simply add a new Schema with the JsonSchema Object.
 
 ```javascript
 var myNewSchema = new JsonSchema({
@@ -19,7 +19,7 @@ var myNewSchema = new JsonSchema({
 	"properties": {
 		"name": {
 			"type": "string"
-		}	
+		}
 	}
  });
 ```
@@ -28,7 +28,7 @@ Now you have access to the ```.validate(value)``` method.
 
 
 
-This method will return a jsonschema validation object. You can simply check if the validation was successful by checking the property ```valid```. 
+This method will return a jsonschema validation object. You can simply check if the validation was successful by checking the property ```valid```.
 
 
 Example:
@@ -103,9 +103,11 @@ You can Access a label by using ```Schema.label(field);``` When your field is an
 
 ## The Future
 
+* a better documentation
 * custom error messages
 * acess other fields in custom validation
 * support for collections
 * async support for custom validation
 * way to access the Validator to customize
 * add reactive support for label
+* add defaultValue
