@@ -1,6 +1,6 @@
 Package.describe({
   name: 'timoruetten:json-schema',
-  version: '0.0.3',
+  version: '0.0.6',
   summary: 'jsonschema Wrapper for Meteor with some functionality. In Development - do not use yet.',
   git: 'https://github.com/TimoRuetten/meteor-json-schema.git',
   documentation: 'README.md'
