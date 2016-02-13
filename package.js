@@ -14,15 +14,22 @@ Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
   api.use('ecmascript');
   api.use('underscore');
-  api.use(['cosmos:browserify@0.9.3'], 'client');
+  api.use([
+    'cosmos:browserify@0.9.3',
+    'ui'
+  ], 'client');
 
-  api.addFiles(['packages/jsonschema.browserify.js'], 'client');
+  api.addFiles([
+    'packages/jsonschema.browserify.js',
+    'template-helpers.js'
+  ], 'client');
   api.addFiles(['packages/jsonschema.js'], 'server');
 
   api.addFiles([
     'utility/JsonSchemaUtility.js',
     'custom-attributes/custom.js',
-    'jsonschema.js'
+    'JsonSchema.js',
+    'JsonSchemaContext.js'
   ]);
 
   api.export(['JsonSchemaUtility', 'JsonSchema'], ['client', 'server']);
