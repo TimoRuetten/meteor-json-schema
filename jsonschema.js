@@ -1,10 +1,11 @@
 
 JsonSchema = class JsonSchema {
   constructor(schema, opt) {
-
     this.opt = _.extend({}, {
       validator: 'default'
     }, opt);
+
+    this._contexts = {};
 
     this.Validator = JsonSchemaUtility.Validator(this.opt.validator);
 
@@ -16,7 +17,6 @@ JsonSchema = class JsonSchema {
       this.Validator.addSchema(schema, schema.id);
     }
   }
-
   _compositedSchema(schemaObject) {
 
     if (schemaObject.$ref) {
@@ -52,15 +52,28 @@ JsonSchema = class JsonSchema {
     }, this.compositedSchema);
   }
 
+
+  context(key) {
+    key = key || '_default';
+    if (!this._contexts[key]) {
+      this._contexts[key] = new JsonSchemaContext(this);
+    }
+    return this._contexts[key];
+  }
+
   validate(doc) {
+    if (!_.isObject(doc) || !doc) doc = {};
     return this.Validator.validate(doc, this.schema);
   }
 
   label(field) {
-    /**
-      Todo:
-      add reactive support
-    */
-    return this.getSchema(field).label || false;
+    const label = this.getSchema(field).label;
+    if (_.isFunction(label)) return label();
+    return label || field;
+  }
+
+  getKeys() {
+    // this will return all possible keys like person, person.name, address, address.street, address.city...
+    return ['name'];
   }
 };
