@@ -4,7 +4,7 @@ JsonSchemaContext = class {
     this._mjs = mjs;
 
     this._depsAny = new Tracker.Dependency();
-    this._depsField = {};
+    this._depsKey = {};
 
     this._reset();
   }
@@ -31,12 +31,12 @@ JsonSchemaContext = class {
     return null;
   }
 
-  isFieldValid(field) {
-    if (!this._depsField[field]) {
-      this._depsField[field] = new Tracker.Dependency();
+  isKeyValid(key) {
+    if (!this._depsKey[key]) {
+      this._depsKey[key] = new Tracker.Dependency();
     }
-    this._depsField[field].depend();
-    return _.indexOf(this._lastValidation.invalidKeys, field) === -1;
+    this._depsKey[key].depend();
+    return _.indexOf(this._lastValidation.invalidKeys, key) === -1;
   }
 
   validate(doc) {
