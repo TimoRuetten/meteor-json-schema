@@ -121,4 +121,15 @@ JsonSchema = class JsonSchema {
     // this will return all possible keys like person, person.name, address, address.street, address.city...
     return ['name'];
   }
+
+  // Do not use yet!
+  _attachTo(collection) {
+    if (!(collection instanceof Meteor.Collection)) {
+      throw new Meteor.Error(400, 'You must attach a valid Meteor.Collection instance.');
+    }
+    if (!collection._mjs) {
+      collection.attachJsonSchema(this);
+    }
+    return this;
+  }
 };
