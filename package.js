@@ -35,13 +35,13 @@ Package.onUse(function(api) {
     'custom-attributes/custom.js',
     'JsonSchema.js',
     'JsonSchemaContext.js',
-    'JsonSchemaError.js'
+    'JsonSchemaValidation.js'
   ]);
 
   api.export([
     'JsonSchemaUtility',
     'JsonSchema',
-    'JsonSchemaError', 
+    'JsonSchemaValidation', 
     'JsonSchemaErrorMessages'
   ], ['client', 'server']);
 });

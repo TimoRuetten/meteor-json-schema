@@ -1,3 +1,6 @@
+/**
+  This will be excluded to another package
+*/
 Handlebars.registerHelper('isKeyValid', function(key, context) {
   if (!(context instanceof JsonSchemaContext)) {
     console.log('This is not a valid JsonSchemaContext:', context);

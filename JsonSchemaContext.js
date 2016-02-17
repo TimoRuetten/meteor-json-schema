@@ -24,7 +24,9 @@ JsonSchemaContext = class {
 
   getErrors() {
     // reactive
-    return null;
+    this._depsAny.depend();
+    // TODO: We have to make the error messages also reactive when its a function
+    return this._lastValidation.details;
   }
 
   getErrorFor(field) {
@@ -43,16 +45,12 @@ JsonSchemaContext = class {
     const validation = this._mjs.validate(doc);
     this._lastValidation = validation;
     this._validations++;
-    this._lastDoc = validation.doc;
 
     this._depsAny.changed();
-    _.each(this._depsField, fieldDep => fieldDep.changed());
+    _.each(this._depsKey, fieldDep => fieldDep.changed());
 
     return validation;
   }
 
-  getDoc() {
-    return this._lastDoc;
-  }
 
 };

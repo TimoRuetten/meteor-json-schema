@@ -16,6 +16,7 @@ JsonSchema = class JsonSchema {
     if (schema.id) {
       this.Validator.addSchema(schema, schema.id);
     }
+
   }
   _compositedSchema(schemaObject) {
 
@@ -65,50 +66,8 @@ JsonSchema = class JsonSchema {
     if (!_.isObject(doc) || !doc) doc = {};
 
     const validation = this.Validator.validate(doc, this.schema);
+    return new JsonSchemaValidation(validation);
 
-    let validationObject = {
-      invalidKeys: [],
-      errors: [],
-      _jsonSchemaError: validation,
-      valid: validation.valid,
-      doc
-    };
-
-
-
-    let propertyPathDepth = 0;
-    if (validation.instance) {
-      propertyPathDepth = validation.propertyPath.split('.').length;
-      if (propertyPathDepth < 0) propertyPathDepth = 0;
-    }
-
-    validation.errors.map((error)=>{
-      let fieldProperty = error.property;
-      // Remove the propertyPath if necessery
-      if (propertyPathDepth) {
-        fieldProperty = fieldProperty.split('.');
-        fieldProperty.splice(0, propertyPathDepth);
-        fieldProperty = fieldProperty.join('.');
-      }
-      // Simple add the property key to _invalidKeys array
-      validationObject.invalidKeys.push(fieldProperty);
-
-      /**
-      * TODO: Create a rly helpful Error Object!
-      * Here we need also our custom error messages key we need to return
-      * The returned key can be used to return a reactive error message
-      */
-
-      validationObject.errors.push(_.extend(
-        error,
-        {
-          property: fieldProperty
-        }
-      ));
-
-    });
-
-    return validationObject;
   }
 
   label(field) {
