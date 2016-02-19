@@ -1,4 +1,15 @@
 
+
+JsonSchemaErrorMessages = {
+  required() {
+    return `${this.label} [${this.key}] is required.`;
+  },
+  type() {
+    return `${this.label} [${this.key}] must be a ${this.argument}.`;
+  }
+};
+
+
 JsonSchemaContext = class {
   constructor(mjs) {
     this._mjs = mjs;
@@ -14,6 +25,25 @@ JsonSchemaContext = class {
     this._validations = 0; // num of validations in this context
     return null;
   }
+  _createErrorMessage(key) {
+    let errorObject = _.findWhere(this._lastValidation.details, {key});
+    if (!errorObject) return '[No Message]';
+
+    let errorMessage = JsonSchemaErrorMessages[errorObject.type];
+    if (!errorMessage) errorMessage = JsonSchemaErrorMessages.__noMessage || 'No Error Message defined.';
+
+    let message = errorMessage;
+    if (_.isFunction(message)) {
+      message = errorMessage.call({
+        key: errorObject.key,
+        argument: errorObject.argument,
+        label:this.label(errorObject.key)
+      });
+    }
+
+    return message;
+  }
+
   label() {
     return this._mjs.label.apply(this._mjs, _.toArray(arguments));
   }
@@ -44,6 +74,10 @@ JsonSchemaContext = class {
   validate(doc) {
     const validation = this._mjs.validate(doc);
     this._lastValidation = validation;
+    this._lastValidation.details.map((error)=>{
+      error.message = this._createErrorMessage(error.key);
+      return error;
+    });
     this._validations++;
 
     this._depsAny.changed();

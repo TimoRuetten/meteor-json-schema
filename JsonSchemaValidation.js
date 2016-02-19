@@ -5,23 +5,7 @@
 *
 *
 */
-JsonSchemaErrorMessages = {
-  required: '${label} is required.',
-  type: '[label] must be a [argument].',
-  _type() {
-    let {label, argument} = this;
-    return `${label} must be a ${argument}`;
-  },
-  __type() {
-    if (this.argument == 'integer') {
-      return 'No integer - no fun!';
-    }
-    return 'Type Error.';
-  },
-  integer() {
-    return '${label} must be an integer';
-  }
-};
+
 
 /**
 * JsonSchemaError
@@ -62,24 +46,14 @@ JsonSchemaValidation = class {
         // Simple add the property key to _invalidKeys array
         this.invalidKeys.push(fieldProperty);
 
-
-
-        /**
-        * This is heavy under construction and not working yet!
-        */
-        let errorMessage = '[label] ' + error.message;
-        let customMessage = JsonSchemaErrorMessages[error.name];
-        const bindObject = {
-          label: 'Placeholder'
+        let errorObject = {
+          key: fieldProperty,
+          type: error.name,
+          value: error.instance,
+          argument: (_.isArray(error.argument) && error.argument.length === 1) ? error.argument.shift():error.argument
         };
-        if (customMessage) {
-          errorMessage = _.isFunction(customMessage) ? customMessage.bind(bindObject)():customMessage;
-        }
 
-
-
-
-        this.details.push(errorMessage);
+        this.details.push(errorObject);
       });
 
     }
