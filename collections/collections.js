@@ -19,11 +19,36 @@ function simulateCollectionUpdate (modifier, opt, defaultDoc) {
 /**
   This will simulate a update on a collection based on the schema
 */
-Mongo.Collection.prototype.simulateModifier = function (obj, opt, _id) {
+Mongo.Collection.prototype.simulateModifier = function (obj, opt, query) {
   if (!this._mjs || !(this._mjs instanceof JsonSchema)) {
     throw new Meteor.Error(400, 'You are not able to simulate a modifier without attached a schema');
   }
-  const defaultDoc = _id ? {}:{};
+
+  let defaultDoc = false;
+  //const defaultDoc = query ? this.findOne(query):{};
+
+  if (query) {
+    if (opt.multi) {
+      /**
+      * TODO: Add support for multi update
+      */
+    } else {
+      // get doc with findOne
+      defaultDoc = this.findOne(query) || {};
+    }
+  }
+  if (!defaultDoc) {
+    // use a "prefilled" version of this._mjs
+    defaultDoc = {};//this._mjs.prefill();
+  }
+  /**
+  * TODO:
+  * Maybe the collection is not published to the client so we have to
+  * to make a fallback if we dont get a document back so we are
+  * not able to validate it correctly - OR we are not able to get
+  * the full document (because of its publish options)
+  * --> So: What to do there ? We have to check.
+  */
   return simulateCollectionUpdate(obj, opt, defaultDoc);
 };
 
@@ -58,7 +83,21 @@ manipulateMongoMethods.map(function(method) {
           }
         }
       } else if (method == 'update') {
-        const doc = args[1];
+        if (Meteor.isServer) {
+          const query = args[0];
+          const update = args[1];
+          const opt = (_.isFunction(args[2]) ? {}:args[2]) || {};
+
+          let doc = this.simulateModifier(update, opt, query);
+          let validation = this._mjs.validate(doc);
+          if (!validation.valid) {
+            /**
+            * TODO:
+            * Get the "new" JsonSchemaError object and cancel the method/threw the error
+            */
+            throw new Meteor.Error(400, 'The Validation failed');
+          }
+        }
 
       }
     }
