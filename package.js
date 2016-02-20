@@ -1,6 +1,6 @@
 Package.describe({
   name: 'timoruetten:json-schema',
-  version: '0.0.6',
+  version: '0.0.7',
   summary: 'jsonschema Wrapper for Meteor with some functionality. In Development - do not use yet.',
   git: 'https://github.com/TimoRuetten/meteor-json-schema.git',
   documentation: 'README.md'
@@ -12,6 +12,7 @@ Npm.depends({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
+
   api.use('ecmascript');
   api.use('underscore');
   api.use([
@@ -19,18 +20,28 @@ Package.onUse(function(api) {
     'ui'
   ], 'client');
 
+  api.use('mongo');
+
   api.addFiles([
     'packages/jsonschema.browserify.js',
     'template-helpers.js'
   ], 'client');
+
   api.addFiles(['packages/jsonschema.js'], 'server');
 
   api.addFiles([
+    'collections/collections.js',
     'utility/JsonSchemaUtility.js',
     'custom-attributes/custom.js',
     'JsonSchema.js',
-    'JsonSchemaContext.js'
+    'JsonSchemaContext.js',
+    'JsonSchemaValidation.js'
   ]);
 
-  api.export(['JsonSchemaUtility', 'JsonSchema'], ['client', 'server']);
+  api.export([
+    'JsonSchemaUtility',
+    'JsonSchema',
+    'JsonSchemaValidation', 
+    'JsonSchemaErrorMessages'
+  ], ['client', 'server']);
 });
