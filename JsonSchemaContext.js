@@ -61,6 +61,9 @@ JsonSchemaErrorMessages = {
   },
   dependencies() {
     return `${this.label} [${this.key}] needs dependencies: ${this.argument}.`;
+  },
+  custom() {
+    return `${this.label} [${this.key}] custom validation failed!`;
   }
 
 };
