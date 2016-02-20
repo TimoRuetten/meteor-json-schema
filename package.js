@@ -34,8 +34,14 @@ Package.onUse(function(api) {
     'utility/JsonSchemaUtility.js',
     'custom-attributes/custom.js',
     'JsonSchema.js',
-    'JsonSchemaContext.js'
+    'JsonSchemaContext.js',
+    'JsonSchemaValidation.js'
   ]);
 
-  api.export(['JsonSchemaUtility', 'JsonSchema'], ['client', 'server']);
+  api.export([
+    'JsonSchemaUtility',
+    'JsonSchema',
+    'JsonSchemaValidation', 
+    'JsonSchemaErrorMessages'
+  ], ['client', 'server']);
 });
