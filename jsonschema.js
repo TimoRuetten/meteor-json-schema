@@ -6,6 +6,7 @@ JsonSchema = class JsonSchema {
     }, opt);
 
     this._contexts = {};
+    this._keys = [];
 
     this.Validator = JsonSchemaUtility.Validator(this.opt.validator);
 
@@ -18,15 +19,18 @@ JsonSchema = class JsonSchema {
     }
 
   }
-  _compositedSchema(schemaObject) {
-
+  _compositedSchema(schemaObject, parent) {
+    if (!parent) parent = [];
     if (schemaObject.$ref) {
       let referencedSchema = this.Validator.schemas[schemaObject.$ref];
       delete schemaObject.$ref;
       schemaObject = _.extend({}, schemaObject, referencedSchema);
     }
     _.each(schemaObject.properties, (schemaField, schemaProperty)=>{
-      schemaObject.properties[schemaProperty] = this._compositedSchema(schemaField);
+      let newParent = _.clone(parent);
+      newParent.push(schemaProperty);
+      this._keys.push(newParent.join('.'));
+      schemaObject.properties[schemaProperty] = this._compositedSchema(schemaField, newParent);
     });
 
     return schemaObject;
@@ -78,7 +82,7 @@ JsonSchema = class JsonSchema {
 
   getKeys() {
     // this will return all possible keys like person, person.name, address, address.street, address.city...
-    return ['name'];
+    return this._keys;
   }
 
 
