@@ -1,7 +1,7 @@
 Package.describe({
   name: 'timoruetten:json-schema',
-  version: '0.0.7',
-  summary: 'jsonschema Wrapper for Meteor with some functionality. In Development - do not use yet.',
+  version: '0.0.9',
+  summary: 'Jsonschema validation for MeteorJS with MongoDB Collection attachment',
   git: 'https://github.com/TimoRuetten/meteor-json-schema.git',
   documentation: 'README.md'
 });
@@ -41,7 +41,7 @@ Package.onUse(function(api) {
   api.export([
     'JsonSchemaUtility',
     'JsonSchema',
-    'JsonSchemaValidation', 
+    'JsonSchemaValidation',
     'JsonSchemaErrorMessages'
   ], ['client', 'server']);
 });
