@@ -6,7 +6,63 @@ JsonSchemaErrorMessages = {
   },
   type() {
     return `${this.label} [${this.key}] must be a ${this.argument}.`;
+  },
+  not() {
+    return `${this.label} [${this.key}] is not allowed to be a ${this.argument}.`;
+  },
+  disallow() {
+    return `${this.label} [${this.key}] is not allowed to be a ${this.argument}.`;
+  },
+  additionalProperties() {
+    return `${this.label} [${this.key}] does not allow additional properties.`;
+  },
+  patternProperties: 'Object properties pattern dismatch',
+  pattern() {
+    return `${this.label} [${this.key}] dismatch by pattern ${this.argument}.`;
+  },
+  format() {
+    return `${this.label} [${this.key}] format dismatch: ${this.argument}.`;
+  },
+  minProperties() {
+    return `${this.label} [${this.key}] needs ${this.argument} or more properties.`;
+  },
+  maxProperties() {
+    return `${this.label} [${this.key}] needs ${this.argument} or less properties.`;
+  },
+  items() {
+    return `${this.label} [${this.key}] items dismatch: ${this.argument}.`;
+  },
+  uniqueItems() {
+    return `${this.label} [${this.key}] does only allowe unique items.`;
+  },
+  minimum() {
+    if (this.schema.maximum) {
+      return `${this.label} [${this.key}] needs to be between ${this.argument} and ${this.schema.maximum}`;
+    }
+    return `${this.label} [${this.key}] needs to be ${this.argument} or more.`;
+  },
+  maximum() {
+    if (this.schema.minimum) {
+      return `${this.label} [${this.key}] needs to be between ${this.schema.minimum} and ${this.argument}`;
+    }
+    return `${this.label} [${this.key}] needs to be ${this.argument} or less.`;
+  },
+  minLength() {
+    return `${this.label} [${this.key}] needs to be ${this.argument} letters or more.`;
+  },
+  maxLength() {
+    return `${this.label} [${this.key}] needs to be ${this.argument} letters or less.`;
+  },
+  divisibleBy() {
+    return `${this.label} [${this.key}] needs to be divisible by ${this.argument}.`;
+  },
+  multipleOf() {
+    return `${this.label} [${this.key}] needs to be multiple by ${this.argument}.`;
+  },
+  dependencies() {
+    return `${this.label} [${this.key}] needs dependencies: ${this.argument}.`;
   }
+
 };
 
 
@@ -21,8 +77,8 @@ JsonSchemaContext = class {
   }
   _reset() {
     this._lastValidation = {};
-    this._lastDoc = false; // the last doc which was validated
-    this._validations = 0; // num of validations in this context
+    this._lastDoc = false;
+    this._validations = 0;
     return null;
   }
   _createErrorMessage(key) {
@@ -34,11 +90,9 @@ JsonSchemaContext = class {
 
     let message = errorMessage;
     if (_.isFunction(message)) {
-      message = errorMessage.call({
-        key: errorObject.key,
-        argument: errorObject.argument,
-        label:this.label(errorObject.key)
-      });
+      message = errorMessage.call(_.extend(errorObject, {
+        label: this.label(errorObject.key)
+      }));
     }
 
     return message;
@@ -55,11 +109,13 @@ JsonSchemaContext = class {
   getErrors() {
     // reactive
     this._depsAny.depend();
-    // TODO: We have to make the error messages also reactive when its a function
     return this._lastValidation.details;
   }
 
   getErrorFor(field) {
+    /**
+    * TODO: Here we need to return a reactive function
+    */
     return null;
   }
 

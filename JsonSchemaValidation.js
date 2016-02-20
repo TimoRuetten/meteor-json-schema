@@ -46,11 +46,20 @@ JsonSchemaValidation = class {
         // Simple add the property key to _invalidKeys array
         this.invalidKeys.push(fieldProperty);
 
+        /**
+        * TODO: We have to add more and useful informations for this error.
+        * example 1: When dependencie failed the information we got is not very helpful
+        * Also we need to access the prop
+        */
+
+        let argument = (_.isArray(error.argument) && error.argument.length === 1) ? error.argument.shift():error.argument;
         let errorObject = {
           key: fieldProperty,
           type: error.name,
           value: error.instance,
-          argument: (_.isArray(error.argument) && error.argument.length === 1) ? error.argument.shift():error.argument
+          schema: error.schema,
+          argument,
+          _jsonschemaErrorObject: error
         };
 
         this.details.push(errorObject);
