@@ -32,7 +32,6 @@ const defineDenyRules = function () {
       return !validation.valid;
     },
     update(uId, doc, fields, modifier) {
-      console.log('Check Update:', modifier);
       // We do not need to call simulateModifier because we can use the fetched doc
       let updatedDoc = simulateCollectionUpdate(modifier, {}, doc);
       let validation = self._mjs.validate(updatedDoc);
