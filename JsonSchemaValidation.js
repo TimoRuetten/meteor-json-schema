@@ -74,7 +74,7 @@ JsonSchemaValidation = class {
     return key;
   }
 
-  threw() {
+  _getError() {
     if (this.valid) return null;
     let {reason, details} = this;
     return new Meteor.Error(400, reason, details);

@@ -36,7 +36,7 @@ Package.onUse(function(api) {
     'JsonSchema.js',
     'JsonSchemaContext.js',
     'JsonSchemaValidation.js'
-  ]);
+  ], ['client', 'server']);
 
   api.export([
     'JsonSchemaUtility',
