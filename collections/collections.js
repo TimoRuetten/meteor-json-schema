@@ -19,15 +19,29 @@ const simulateCollectionUpdate = function (modifier, opt, defaultDoc) {
 /**
 * Define deny rules
 */
-const defineDenyRules = function (collection) {
+const defineDenyRules = function () {
+  if (!this._mjs) return null;
+  let self = this;
 
-  collection.deny({
-    insert() {
-      return false;
+  this.deny({
+    insert(uId, doc) {
+      let validation = self._mjs.validate(doc);
+      if (!validation.valid) {
+        throw validation._getError();
+      }
+      return !validation.valid;
     },
-    update() {
-      return false;
+    update(uId, doc, fields, modifier) {
+      console.log('Check Update:', modifier);
+      // We do not need to call simulateModifier because we can use the fetched doc
+      let updatedDoc = simulateCollectionUpdate(modifier, {}, doc);
+      let validation = self._mjs.validate(updatedDoc);
+      if (!validation.valid) {
+        throw validation._getError();
+      }
+      return !validation.valid;
     }
+    // fetch: [] will be added later for performance - we will add all relevant keys from database
   });
   return null;
 };
@@ -52,46 +66,5 @@ Mongo.Collection.prototype.attachJsonSchema = function(schema, opt) {
   opt = _.extend({}, {
 
   }, opt);
-
+  defineDenyRules.call(this);
 };
-
-const manipulateMongoMethods = ['insert', 'update'];
-
-manipulateMongoMethods.map(function(method) {
-
-  let mongoMethod = Mongo.Collection.prototype[method];
-
-  Mongo.Collection.prototype[method] = function(...args) {
-    console.log('Called a mongo method ... server:', Meteor.isServer);
-    if (this._mjs) {
-      if (method == 'insert') {
-        const doc = args[0];
-        if (doc) {
-          let validation = this._mjs.validate(doc);
-          if (!validation.valid) {
-            return validation._getError();
-          }
-        }
-      } else if (Meteor.isServer && method == 'update') {
-        const query = args[0] || {};
-        const doc   = args[1] || {};
-        const opt   = args[2] || {};
-
-        if (opt.multi) {
-          console.log('Attention: MULTI UPDATE VALIDATIONS NOT POSSIBLE YET');
-        } else {
-          let updatedDoc = this.simulateModifier(doc, opt, query);
-          let validation = this._mjs.validate(updatedDoc);
-          if (!validation.valid) {
-            return validation._getError();
-          }
-        }
-
-      }
-    }
-
-    return mongoMethod.apply(this, args);
-  };
-
-
-});
