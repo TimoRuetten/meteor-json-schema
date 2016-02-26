@@ -85,9 +85,7 @@ JsonSchema = class JsonSchema {
     return this._keys;
   }
 
-
-  // Do not use yet!
-  _attachTo(collection) {
+  attachTo(collection) {
     if (!(collection instanceof Meteor.Collection)) {
       throw new Meteor.Error(400, 'You must attach a valid Meteor.Collection instance.');
     }
@@ -95,6 +93,20 @@ JsonSchema = class JsonSchema {
       collection.attachJsonSchema(this);
     }
     return this;
+  }
+
+  /**
+  * We want to clean a object - this means:
+  * 1. Remove all properties which are not allowed in our schema
+  * 2. Add all defaultValues we have added
+  * 3. trigger a transformation if we have one (This will be added later and is not available now)
+  * 4. Remove all INVALID keys and replace with defaultValue
+  */
+  clean(doc, opt) {
+    let cleanedDoc = {};
+    opt = _.extend({}, opt);
+    // we iterate the schema not the doc
+    return cleanedDoc;
   }
 
 };
