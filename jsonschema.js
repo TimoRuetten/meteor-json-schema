@@ -57,6 +57,15 @@ JsonSchema = class JsonSchema {
     }, this.compositedSchema);
   }
 
+  getDefaultValue(field) {
+    let schema = this.getSchema(field);
+    if (!schema) return;
+    if (typeof(schema.defaultValue) == 'undefined') return;
+    if (_.isFunction(schema.defaultValue)) {
+      return schema.defaultValue.call({});
+    }
+    return schema.defaultValue;
+  }
 
   context(key) {
     key = key || '_default';
