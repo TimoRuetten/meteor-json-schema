@@ -1,4 +1,37 @@
 
+const compositeSchema = function (schemaObject, parent) {
+  if (!parent) parent = [];
+  if (schemaObject.$ref) {
+    let referencedSchema = this.Validator.schemas[schemaObject.$ref];
+    delete schemaObject.$ref;
+    schemaObject = _.extend({}, schemaObject, referencedSchema);
+  }
+  _.each(schemaObject.properties, (schemaField, schemaProperty)=>{
+    let newParent = _.clone(parent);
+    newParent.push(schemaProperty);
+    this._keys.push(newParent.join('.'));
+    schemaObject.properties[schemaProperty] = compositeSchema.call(this, schemaField, newParent);
+  });
+
+  return schemaObject;
+};
+
+const cleanJsonschema = function (schema, doc, opt) {
+  let cleanedDoc = {};
+
+  if (schema.properties) {
+    _.each(schema.properties, function(properties, field){
+      cleanedDoc[field] = cleanJsonschema(properties, doc, opt);
+    });
+  } else {
+    return schema.defaultValue || null;
+  }
+
+
+  return cleanedDoc;
+
+};
+
 JsonSchema = class JsonSchema {
   constructor(schema, opt) {
     this.opt = _.extend({}, {
@@ -11,29 +44,13 @@ JsonSchema = class JsonSchema {
     this.Validator = JsonSchemaUtility.Validator(this.opt.validator);
 
     this.schema = schema;
-    this.compositedSchema = this._compositedSchema(schema);
+    this.compositedSchema = compositeSchema.call(this, schema);
 
     // Adding the schema to the scope of schemas when it provides a id
     if (schema.id) {
       this.Validator.addSchema(schema, schema.id);
     }
 
-  }
-  _compositedSchema(schemaObject, parent) {
-    if (!parent) parent = [];
-    if (schemaObject.$ref) {
-      let referencedSchema = this.Validator.schemas[schemaObject.$ref];
-      delete schemaObject.$ref;
-      schemaObject = _.extend({}, schemaObject, referencedSchema);
-    }
-    _.each(schemaObject.properties, (schemaField, schemaProperty)=>{
-      let newParent = _.clone(parent);
-      newParent.push(schemaProperty);
-      this._keys.push(newParent.join('.'));
-      schemaObject.properties[schemaProperty] = this._compositedSchema(schemaField, newParent);
-    });
-
-    return schemaObject;
   }
 
   /**
@@ -93,6 +110,10 @@ JsonSchema = class JsonSchema {
     // this will return all possible keys like person, person.name, address, address.street, address.city...
     return this._keys;
   }
+  getChildKeys(key) {
+    // TODO: Add the depth argument
+    return null;
+  }
 
   attachTo(collection) {
     if (!(collection instanceof Meteor.Collection)) {
@@ -104,17 +125,10 @@ JsonSchema = class JsonSchema {
     return this;
   }
 
-  /**
-  * We want to clean a object - this means:
-  * 1. Remove all properties which are not allowed in our schema
-  * 2. Add all defaultValues we have added
-  * 3. trigger a transformation if we have one (This will be added later and is not available now)
-  * 4. Remove all INVALID keys and replace with defaultValue
-  */
   clean(doc, opt) {
     let cleanedDoc = {};
     opt = _.extend({}, opt);
-    // we iterate the schema not the doc
+    cleanedDoc = cleanJsonschema(this.schema, doc, opt);
     return cleanedDoc;
   }
 
