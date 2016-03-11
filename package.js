@@ -17,9 +17,9 @@ Package.onUse(function(api) {
     'cosmos:browserify@0.9.3',
     'ui'
   ], 'client');
-  api.use([
+  /*api.use([
     'erasaur:meteor-lodash'
-  ]);
+  ]);*/
   api.use('mongo');
 
   api.addFiles([
@@ -30,6 +30,7 @@ Package.onUse(function(api) {
   api.addFiles(['packages/jsonschema.js'], 'server');
 
   api.addFiles([
+    'libraries/lodash.js',
     'collections/collections.js',
     'utility/JsonSchemaUtility.js',
     'custom-attributes/custom.js',

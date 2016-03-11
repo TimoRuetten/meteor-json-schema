@@ -1,4 +1,6 @@
 
+const lodash = _;
+
 const compositeSchema = function (schemaObject, parent) {
   if (!parent) parent = [];
   if (schemaObject.$ref) {
@@ -14,22 +16,6 @@ const compositeSchema = function (schemaObject, parent) {
   });
 
   return schemaObject;
-};
-
-const cleanJsonschema = function (schema, doc, opt) {
-  let cleanedDoc = {};
-
-  if (schema.properties) {
-    _.each(schema.properties, function(properties, field){
-      cleanedDoc[field] = cleanJsonschema(properties, doc, opt);
-    });
-  } else {
-    return schema.defaultValue || null;
-  }
-
-
-  return cleanedDoc;
-
 };
 
 JsonSchema = class JsonSchema {
@@ -107,12 +93,7 @@ JsonSchema = class JsonSchema {
   }
 
   getKeys() {
-    // this will return all possible keys like person, person.name, address, address.street, address.city...
     return this._keys;
-  }
-  getChildKeys(key) {
-    // TODO: Add the depth argument
-    return null;
   }
 
   attachTo(collection) {
@@ -124,12 +105,56 @@ JsonSchema = class JsonSchema {
     }
     return this;
   }
+  _cleanJsonschemaObject(context, doc, field, fieldPath) {
+    let cleanedObject = {};
+    if (context && context.properties) {
+      _.each(context.properties, (fieldValue, fieldProperty)=>{
+        let _fieldPath =(((fieldPath) ? fieldPath + '.':((field) ? field + '.':'')) + fieldProperty);
+        let _context = context.properties[fieldProperty];
+        cleanedObject[fieldProperty] = this._cleanJsonschemaObject(_context, doc, fieldProperty, _fieldPath);
+      });
+    } else {
+      let value = fieldPath ? lodash.get(doc, fieldPath, null):doc;
+      if (_.isNull(value) || _.isUndefined(value)) {
+        value = this.getDefaultValue(fieldPath) || null;
+      }
+      return value;
+    }
+
+    return cleanedObject;
+  }
 
   clean(doc, opt) {
-    let cleanedDoc = {};
-    opt = _.extend({}, opt);
-    cleanedDoc = cleanJsonschema(this.schema, doc, opt);
-    return cleanedDoc;
+    opt = _.extend({
+      removeInvalid: false,
+      setDefaultValueFallbackOnError: true,
+    }, opt);
+
+    let cleanedObject = this._cleanJsonschemaObject(this.schema, doc, null, null);
+    this.getKeys().map(function(key){
+      let v = lodash.get(cleanedObject, key, null);
+      if (_.isNull(v) || _.isUndefined(v)) {
+        lodash.unset(cleanedObject, key);
+      }
+    });
+
+    if (opt.removeInvalid) {
+      let validation = this.validate(cleanedObject);
+      _.each(validation.invalidKeys, (invalidKey)=>{
+        // do we have a defaultValue for fallback ?
+        let defaultValue = null;
+        if (opt.setDefaultValueFallbackOnError) {
+          defaultValue = this.getDefaultValue(invalidKey);
+        }
+        if (!_.isNull(defaultValue) && !_.isUndefined(defaultValue)) {
+          lodash.set(cleanedObject, invalidKey, defaultValue);
+        } else {
+          lodash.unset(cleanedObject, invalidKey);
+        }
+      });
+    }
+
+    return cleanedObject;
   }
 
 };
