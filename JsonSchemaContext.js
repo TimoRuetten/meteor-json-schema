@@ -37,13 +37,13 @@ JsonSchemaErrorMessages = {
   },
   minimum() {
     if (this.schema.maximum) {
-      return `${this.label} [${this.key}] needs to be between ${this.argument} and ${this.schema.maximum}`;
+      return `${this.label} [${this.key}] needs to be ${this.argument} to ${this.schema.maximum}`;
     }
     return `${this.label} [${this.key}] needs to be ${this.argument} or more.`;
   },
   maximum() {
     if (this.schema.minimum) {
-      return `${this.label} [${this.key}] needs to be between ${this.schema.minimum} and ${this.argument}`;
+      return `${this.label} [${this.key}] needs to be ${this.schema.minimum} to ${this.argument}`;
     }
     return `${this.label} [${this.key}] needs to be ${this.argument} or less.`;
   },
