@@ -17,9 +17,6 @@ Package.onUse(function(api) {
     'cosmos:browserify@0.9.3',
     'ui'
   ], 'client');
-  /*api.use([
-    'erasaur:meteor-lodash'
-  ]);*/
   api.use('mongo');
 
   api.addFiles([
